@@ -40,6 +40,6 @@ module "alb" {
 
 #   tags = {
 #     Environment = "prod"
-#     Project     = "web"
+#     Project     = "Nginx"
 #   }
 # }
