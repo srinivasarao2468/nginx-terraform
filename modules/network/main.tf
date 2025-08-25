@@ -1,6 +1,3 @@
-########################################
-# VPC
-########################################
 resource "aws_vpc" "main" {
   cidr_block           = var.vpc_cidr
   enable_dns_hostnames = true
@@ -11,9 +8,6 @@ resource "aws_vpc" "main" {
   }
 }
 
-########################################
-# Internet Gateway
-########################################
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main.id
 
@@ -22,14 +16,8 @@ resource "aws_internet_gateway" "igw" {
   }
 }
 
-########################################
-# Availability Zones
-########################################
 data "aws_availability_zones" "available" {}
 
-########################################
-# Public Subnets
-########################################
 resource "aws_subnet" "public" {
   count                   = length(var.public_cidrs)
   vpc_id                  = aws_vpc.main.id
@@ -42,9 +30,6 @@ resource "aws_subnet" "public" {
   }
 }
 
-########################################
-# Private Subnets
-########################################
 resource "aws_subnet" "private" {
   count             = length(var.private_cidrs)
   vpc_id            = aws_vpc.main.id
@@ -56,9 +41,6 @@ resource "aws_subnet" "private" {
   }
 }
 
-########################################
-# Elastic IP for NAT Gateway
-########################################
 resource "aws_eip" "nat" {
   domain = "vpc"
 
@@ -67,9 +49,6 @@ resource "aws_eip" "nat" {
   }
 }
 
-########################################
-# NAT Gateway
-########################################
 resource "aws_nat_gateway" "nat" {
   allocation_id = aws_eip.nat.id
   subnet_id     = aws_subnet.public[0].id
@@ -79,9 +58,6 @@ resource "aws_nat_gateway" "nat" {
   }
 }
 
-########################################
-# Route Table for Public Subnets
-########################################
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
 
@@ -102,9 +78,6 @@ resource "aws_route_table_association" "public_assoc" {
   route_table_id = aws_route_table.public.id
 }
 
-########################################
-# Route Table for Private Subnets
-########################################
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.main.id
 
